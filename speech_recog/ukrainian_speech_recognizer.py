@@ -10,10 +10,10 @@ class UkrainianSpeechRecognizer(BaseSpeechRecognizer):
     def recognize_speech(self):
         with sr.Microphone() as source:
             print("Слухаю...")
-            audio = self.recognizer.listen(source,timeout = None)
+            audio = self.recognizer.listen(source, timeout=None)
 
         try:
-            return self.recognizer.recognize_google(audio, language='uk-UK')
+            return self.recognizer.recognize_google(audio, language='uk-UA')
         except sr.UnknownValueError:
             return None
         except sr.RequestError:

@@ -17,8 +17,15 @@ class BaseSpeechRecognizer(ABC):
     def recognize_speech(self):
         pass
 
-    def speak(text, language):
-        tts = gTTS(text, lang = language)
+    def speak(self, text):
+        if self.language == "pl":
+            lang_code = "pl"
+        elif self.language == "uk":
+            lang_code = "uk"
+        else:
+            raise ValueError(f"Invalid language '{self.language}', use 'pl' or 'uk'.")
+
+        tts = gTTS(text, lang = lang_code)
         with tempfile.NamedTemporaryFile(delete = True) as fp:
             tts.save(fp.name)
             os.system(f"afplay {fp.name}")

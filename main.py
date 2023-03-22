@@ -22,7 +22,9 @@ def main():
 
         weather_facade = WeatherFacade(language, GEOCODING_API_KEY, WEATHER_API_KEY, AIR_POLLUTION_API_KEY)
         if "jakość powietrza" in query or "zanieczyszczenie powietrza" in query or "якість повітря" in query or "забруднення повітря" in query:
-            city = recognizer.extract_city(query)
+            recognizer.speak("Dla jakiego miasta chcesz uzyskać informacje o jakości powietrza?")
+            city = recognizer.recognize_speech()
+            print(f"City: ", city)
             if city:
                 weather_data, air_pollution_data = weather_facade.get_weather_data(city)
                 if air_pollution_data:
@@ -34,7 +36,7 @@ def main():
         elif "pogoda" in query or "погода" in query:
             city = recognizer.extract_city(query)
             if city:
-                weather_data, _ = weather_facade.get_weather_data(city)
+                weather_data = weather_facade.get_weather_data(city)
                 if weather_data:
                     recognizer.speak(f"Pogoda w {city}: {weather_data}")
                 else:
@@ -44,10 +46,11 @@ def main():
         else:
             summaries = recognizer.search_google(query)
             if summaries:
-                for i, summary in enumerate(summaries, start=1):
+                for i, summary in enumerate(summaries, start = 1):
                     recognizer.speak(f"Wynik {i}: {summary}")
             else:
                 recognizer.speak("Nie znaleziono żadnych informacji na ten temat.")
+
 
 if __name__ == "__main__":
     main()

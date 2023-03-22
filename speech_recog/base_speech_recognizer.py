@@ -30,6 +30,17 @@ class BaseSpeechRecognizer(ABC):
             tts.save(fp.name)
             os.system(f"afplay {fp.name}")
 
+    def ask_for_city(self):
+        if self.language == 'pl':
+            self.speak("Dla jakiego miasta chcesz uzyskać informacje o jakości powietrza?")
+        elif self.language == 'uk':
+            self.speak("Для якого міста ви хочете дізнатися про якість повітря?")
+
+        city = None
+        while city is None:
+            city = self.recognize_speech()
+        return city
+
     def extract_city(self, query):
         if self.language == 'pl':
             match = re.search(r'pogoda\s+([\w\s]+)', query, re.IGNORECASE)
@@ -37,7 +48,7 @@ class BaseSpeechRecognizer(ABC):
             match = re.search(r'погода\s+([\w\s]+)', query, re.IGNORECASE)
         return match.group(1).strip() if match else None
 
-    def search_google(query):
+    def search_google(self, query):
         search_results = googlesearch.search(query, num_results = 3)
         summaries = []
         for url in search_results:

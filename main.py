@@ -26,9 +26,13 @@ def main():
             city = recognizer.recognize_speech()
             print(f"City: ", city)
             if city:
-                weather_data, air_pollution_data = weather_facade.get_weather_data(city)
-                if air_pollution_data:
-                    recognizer.speak(f"Jakość powietrza w {city}: {air_pollution_data['air_quality']}. Norma PM2.5 przekroczona o {air_pollution_data['pm25_exceeded']:.2f}%, norma PM10 przekroczona o {air_pollution_data['pm10_exceeded']:.2f}%")
+                result = weather_facade.get_weather_data(city)
+                if result is not None:
+                    weather_data, air_pollution_data = result
+                    if air_pollution_data:
+                        recognizer.speak(f"Jakość powietrza w {city}: {air_pollution_data['air_quality']}. Norma PM2.5 przekroczona o {air_pollution_data['pm25_exceeded']:.2f}%, norma PM10 przekroczona o {air_pollution_data['pm10_exceeded']:.2f}%")
+                    else:
+                        recognizer.speak("Nie udało się pobrać danych o jakości powietrza.")
                 else:
                     recognizer.speak("Nie udało się pobrać danych o jakości powietrza.")
             else:

@@ -36,9 +36,13 @@ def main():
         elif "pogoda" in query or "погода" in query:
             city = recognizer.extract_city(query)
             if city:
-                weather_data = weather_facade.get_weather_data(city)
-                if weather_data:
-                    recognizer.speak(f"Pogoda w {city}: {weather_data}")
+                result = weather_facade.get_weather_data(city)
+                if result is not None:
+                    weather_data, _ = result
+                    if weather_data is not None:
+                        recognizer.speak(f"Pogoda w {city}: {weather_data}")
+                    else:
+                        recognizer.speak("Nie udało się pobrać danych o pogodzie.")
                 else:
                     recognizer.speak("Nie udało się pobrać danych o pogodzie.")
             else:

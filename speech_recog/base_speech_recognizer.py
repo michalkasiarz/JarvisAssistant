@@ -7,6 +7,7 @@ import requests
 import googlesearch
 from bs4 import BeautifulSoup
 from gtts import gTTS
+from playsound import playsound
 
 
 class BaseSpeechRecognizer(ABC):
@@ -25,10 +26,24 @@ class BaseSpeechRecognizer(ABC):
         else:
             raise ValueError(f"Invalid language '{self.language}', use 'pl' or 'uk'.")
 
-        tts = gTTS(text, lang = lang_code)
-        with tempfile.NamedTemporaryFile(delete = True) as fp:
-            tts.save(fp.name)
-            os.system(f"afplay {fp.name}")
+        temp_path = None
+        try:
+            tts = gTTS(text, lang = lang_code)
+            file_descriptor, temp_path = tempfile.mkstemp(suffix = ".mp3")
+            os.close(file_descriptor)
+            tts.save(temp_path)
+            try:
+                playsound(temp_path)
+            except Exception as play_error:
+                print(f"Failed to play generated speech: {play_error}")
+        except Exception as error:
+            print(f"Failed to generate speech: {error}")
+        finally:
+            if temp_path and os.path.exists(temp_path):
+                try:
+                    os.remove(temp_path)
+                except OSError as cleanup_error:
+                    print(f"Failed to remove temporary audio file: {cleanup_error}")
 
     def ask_for_city(self):
         if self.language == 'pl':
